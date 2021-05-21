@@ -1,0 +1,19 @@
+{
+	"name": "werkbot/werkbot-seeder",
+	"description": "Development database seeder",
+  "type": "silverstripe-vendormodule",
+  "require": {
+   "silverstripe/cms": "~4.0",
+   "silverstripe/framework": "~4.0"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev"
+    }
+  },
+  "autoload": {
+   "psr-4": {
+     "Werkbot\\Seeder\\": "src/"
+   }
+  }
+}

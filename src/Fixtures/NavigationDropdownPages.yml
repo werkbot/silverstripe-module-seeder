@@ -1,0 +1,67 @@
+Page:
+  DefaultParentPage:
+    Title: 'Parent Page'
+    SettingNavigationType: 'default'
+  DefaultChildPageOne:
+    Title: 'Child Page One'
+    Parent: =>Page.DefaultParentPage
+  DefaultChildPageTwo:
+    Title: 'Child Page Two'
+    Parent: =>Page.DefaultParentPage
+  DefaultChildPageThree:
+    Title: 'Child Page Three'
+    Parent: =>Page.DefaultParentPage
+
+  SuperParentPage:
+    Title: 'Parent Page'
+    SettingNavigationType: 'super'
+  # Column one
+  SuperColumnOneChildPage:
+    Title: 'Column Page One'
+    SettingNavigationColumn: 1
+    Parent: =>Page.SuperParentPage
+  # Column one page with children
+  SuperColumnOneChildPageWithChildren:
+    Title: 'Column One With Children'
+    SettingNavigationColumn: 1
+    Parent: =>Page.SuperParentPage
+  SuperColumnOneChildPageChild:
+    Title: 'Child'
+    SettingNavigationColumn: 1
+    Parent: =>Page.SuperColumnOneChildPageWithChildren
+  SuperColumnOneChildPageChildTwo:
+    Title: 'Child'
+    SettingNavigationColumn: 1
+    Parent: =>Page.SuperColumnOneChildPageWithChildren
+  # Column two
+  SuperColumnTwoChildPage:
+    Title: 'Column Page Two'
+    SettingNavigationColumn: 2
+    Parent: =>Page.SuperParentPage
+  # Column two page without children
+  SuperColumnTwoChildPageTwoWithoutChildren:
+    Title: 'Column Page Two'
+    SettingNavigationColumn: 2
+    Parent: =>Page.SuperParentPage
+  # Column three
+  SuperColumnThreeChildPageWithChildren:
+    Title: 'Column Three With Children'
+    SettingNavigationColumn: 3
+    Parent: =>Page.SuperParentPage
+  SuperColumnThreeChildPageChild:
+    Title: 'Child'
+    SettingNavigationColumn: 3
+    Parent: =>Page.SuperColumnThreeChildPageWithChildren
+  SuperColumnThreeChildPageChildTwo:
+    Title: 'Child'
+    SettingNavigationColumn: 3
+    Parent: =>Page.SuperColumnThreeChildPageWithChildren
+  SuperColumnThreeChildPageChildThree:
+    Title: 'Child'
+    SettingNavigationColumn: 3
+    Parent: =>Page.SuperColumnThreeChildPageWithChildren
+  # Column four
+  SuperColumnFourChildPage:
+    Title: 'Column Page four'
+    SettingNavigationColumn: 4
+    Parent: =>Page.SuperParentPage
