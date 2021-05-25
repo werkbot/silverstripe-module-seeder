@@ -23,6 +23,13 @@ Run `/dev/build` on your site.
 
 You can now run seeder tasks in `/dev/Tasks` while in development mode.
 
+Run all seeders with "Generate Development Test Data". Configure which seeders should run in DatabaseSeeder.yml
+
+      Werkbot\Seeder\NavigationDropdownPagesSeeder:
+        enabled: true
+      Werkbot\Seeder\SocialLinksSeeder:
+        enabled: true
+
 ### Overriding Seeders
 - Create an `app/seeds` directory
 - Override the seeder fixture https://docs.silverstripe.org/en/4/developer_guides/testing/fixtures/
@@ -37,5 +44,6 @@ You can now run seeder tasks in `/dev/Tasks` while in development mode.
 		    Parent: =>Page.DefaultParentPage
 
 #### Available Seeders Fixtures
+- DatabaseSeeder.yml
 - NavigationDropdownPages.yml
 - SocialLinks.yml
