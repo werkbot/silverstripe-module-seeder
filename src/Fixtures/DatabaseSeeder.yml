@@ -1,0 +1,4 @@
+Werkbot\Seeder\NavigationDropdownPagesSeeder:
+  enabled: true
+Werkbot\Seeder\SocialLinksSeeder:
+  enabled: true
