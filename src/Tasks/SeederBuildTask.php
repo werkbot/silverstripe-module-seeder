@@ -28,6 +28,9 @@ class SeederBuildTask extends BuildTask {
 			if(file_exists('../app/seeds/' . $this->fixtureFileName)) {
 				$fixtureFile = 'app/seeds/' . $this->fixtureFileName;
 				$pathResolver = '../';
+			} else if(file_exists('../app/_config/' . $this->fixtureFileName)) {
+				$fixtureFile = 'app/_config/' . $this->fixtureFileName;
+				$pathResolver = '../';
 			// Check if default fixture exists
 			} else if(file_exists(__DIR__ . '/../Fixtures/' . $this->fixtureFileName)) {
 				$fixtureFile = __DIR__ . '/../Fixtures/' . $this->fixtureFileName;
