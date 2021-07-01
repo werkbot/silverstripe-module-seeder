@@ -24,10 +24,30 @@ class SeederBuildTask extends BuildTask {
 		if(Environment::getEnv('SS_ENVIRONMENT_TYPE') == 'dev'
 			|| Environment::getEnv('SS_ENVIRONMENT_TYPE') == 'test'
 		) {
-			// Check if fixture override exists
+			// Get the directory of the current seeder build task
+			$seederTaskDirectory = (new \ReflectionClass(get_class($this)))->getFilename();
+			$seederTaskDirectory = explode('/', $seederTaskDirectory);
+			// If the directory is not split by forward slashes, split by Windows back slashes
+			if(count($seederTaskDirectory) == 1){
+				$seederTaskDirectory = explode('\\', join($seederTaskDirectory));
+			}
+			array_pop($seederTaskDirectory);
+			$seederTaskDirectory = join('/', $seederTaskDirectory);
+
+			// Check in the site if a fixture override exists
 			if(file_exists('../app/seeds/' . $this->fixtureFileName)) {
 				$fixtureFile = 'app/seeds/' . $this->fixtureFileName;
 				$pathResolver = '../';
+			} else if(file_exists('../app/_config/' . $this->fixtureFileName)) {
+				$fixtureFile = 'app/_config/' . $this->fixtureFileName;
+				$pathResolver = '../';
+
+			// Check in the current seeder's module if a fixture override exists
+			} else if(file_exists($seederTaskDirectory . '/../../_config/' . $this->fixtureFileName)) {
+				$fixtureFile = $seederTaskDirectory . '/../../_config/' . $this->fixtureFileName;
+			} else if(file_exists($seederTaskDirectory . '/../../seeds/' . $this->fixtureFileName)) {
+				$fixtureFile = $seederTaskDirectory . '/../../seeds/' . $this->fixtureFileName;
+
 			// Check if default fixture exists
 			} else if(file_exists(__DIR__ . '/../Fixtures/' . $this->fixtureFileName)) {
 				$fixtureFile = __DIR__ . '/../Fixtures/' . $this->fixtureFileName;
@@ -35,6 +55,7 @@ class SeederBuildTask extends BuildTask {
 				echo 'No fixture file found. Create an "app/seeds/$fixtureFileName"';
 				return;
 			}
+			
 			// If running the parent SeederBuildTask
 			if($this->fixtureFileName == 'DatabaseSeeder.yml'){
 				$parser = new Parser();
