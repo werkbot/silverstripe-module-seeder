@@ -27,6 +27,10 @@ class SeederBuildTask extends BuildTask {
 			// Get the directory of the current seeder build task
 			$seederTaskDirectory = (new \ReflectionClass(get_class($this)))->getFilename();
 			$seederTaskDirectory = explode('/', $seederTaskDirectory);
+			// If the directory is not split by forward slashes, split by Windows back slashes
+			if(count($seederTaskDirectory) == 1){
+				$seederTaskDirectory = explode('\\', join($seederTaskDirectory));
+			}
 			array_pop($seederTaskDirectory);
 			$seederTaskDirectory = join('/', $seederTaskDirectory);
 
