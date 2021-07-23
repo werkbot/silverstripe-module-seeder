@@ -2,8 +2,10 @@
 /**/
 namespace Werkbot\Seeder;
 /**/
+use SilverStripe\Assets\Folder;
 use SilverStripe\Dev\FixtureFactory;
 use SilverStripe\Dev\FixtureBlueprint;
+use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 /**/
 class SeederFixtureFactory extends FixtureFactory {
     /**
@@ -17,6 +19,9 @@ class SeederFixtureFactory extends FixtureFactory {
      */
     public function createObject($name, $identifier, $data = null)
     {
+        // Create a Folder for any seeder images generated
+        $folder = Folder::find_or_make("SeederImages");
+        //
         if (!isset($this->blueprints[$name])) {
             $this->blueprints[$name] = new FixtureBlueprint($name);
         }
@@ -28,6 +33,15 @@ class SeederFixtureFactory extends FixtureFactory {
             $this->fixtures[$class] = [];
         }
         $this->fixtures[$class][$identifier] = $obj->ID;
+
+        // For any images, lets store the image
+        if($class=="SilverStripe\Assets\Image"){
+          $contents = @file_get_contents($data['URL']);
+          $obj->setFromString($contents, $data['Name']);
+          $obj->ParentID = $folder->ID;
+          $obj->write();
+          AssetAdmin::create()->generateThumbnails($obj);
+        }
 
         $obj->publishRecursive();
 

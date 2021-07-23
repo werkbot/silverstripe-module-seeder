@@ -9,4 +9,4 @@ class SocialLinksSeeder extends SeederBuildTask {
 	protected $enabled = true;
 	/**/
 	protected $fixtureFileName = 'SocialLinks.yml';
-} 
+}
