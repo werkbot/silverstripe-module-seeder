@@ -3,8 +3,8 @@
 namespace Werkbot\Seeder;
 /**/
 use SilverStripe\Dev\BuildTask;
-use SilverStripe\Core\Environment;
 use SilverStripe\Dev\YamlFixture;
+use SilverStripe\Core\Environment;
 use Symfony\Component\Yaml\Parser;
 use SilverStripe\Core\Injector\Injector;
 /**/
@@ -55,7 +55,7 @@ class SeederBuildTask extends BuildTask {
 				echo 'No fixture file found. Create an "app/seeds/$fixtureFileName"';
 				return;
 			}
-			
+
 			// If running the parent SeederBuildTask
 			if($this->fixtureFileName == 'DatabaseSeeder.yml'){
 				$parser = new Parser();
@@ -78,4 +78,4 @@ class SeederBuildTask extends BuildTask {
 			echo 'Must run in development or test environment';
 		}
 	}
-} 
+}
