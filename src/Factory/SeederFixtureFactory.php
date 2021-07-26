@@ -41,6 +41,9 @@ class SeederFixtureFactory extends FixtureFactory {
           $obj->ParentID = $folder->ID;
           $obj->write();
           AssetAdmin::create()->generateThumbnails($obj);
+        // THE FOLLOWING CLASSES ARE WITHOUT NAMESPACES.
+        // THIS WILL NEED TO BE UPDATED WHEN THE CALENDAR IS NAMESPACED
+        // https://werkbotstudios.teamwork.com/#/tasks/23804616
         } else if($class == "Event"){
           if(isset($data['RepeatStartDaysInTheFuture'])){
               $obj->RepeatStartDate = date('Y-m-d H:i:s', strtotime('+' . $data['RepeatStartDaysInTheFuture'] . ' days'));
@@ -48,11 +51,19 @@ class SeederFixtureFactory extends FixtureFactory {
               $obj->write();
           }
         } else if($class == "EventDate"){
-          $obj->StartDate = date('Y-m-d H:i:s', strtotime('+' . $data['DaysInTheFuture'] . ' days'));
+          if(isset($data['DaysInTheFuture'])){
+            $obj->StartDate = date('Y-m-d H:i:s', strtotime('+' . $data['DaysInTheFuture'] . ' days'));
+          } else {
+            $obj->StartDate = date('Y-m-d H:i:s');
+          }
           $obj->write();
-        } else if($class == "EventTime" && $data['TimeClass'] == 'Event'){
-          $obj->write();
-          $obj->Time()->RewriteDates();
+        } else if($class == "EventTime"){
+          if(isset($data['TimeClass'])){
+            if($data['TimeClass'] == 'Event'){
+              $obj->write();
+              $obj->Time()->RewriteDates();
+            }
+          }
         }
 
         $obj->publishRecursive();
