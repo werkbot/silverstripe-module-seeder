@@ -72,7 +72,14 @@ class SeederBuildTask extends BuildTask {
 			} else {
 				// Run singular seeder
 				$fixture = YamlFixture::create($fixtureFile);
-				$fixture->writeInto(new SeederFixtureFactory());
+				if(method_exists($this, 'createObjectCallback')){
+					$createObjectCallback = function($obj, $class, $data){
+						call_user_func([$this, 'createObjectCallback'], $obj, $class, $data);
+					};
+					$fixture->writeInto(new SeederFixtureFactory($createObjectCallback));
+				} else {
+					$fixture->writeInto(new SeederFixtureFactory());
+				}
 			}
 		} else {
 			echo 'Must run in development or test environment';
