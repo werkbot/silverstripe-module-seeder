@@ -2,12 +2,22 @@
 /**/
 namespace Werkbot\Seeder;
 /**/
-use SilverStripe\Assets\Folder;
-use SilverStripe\Dev\FixtureFactory;
-use SilverStripe\Dev\FixtureBlueprint;
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
+use SilverStripe\Assets\Folder;
+use SilverStripe\Assets\Image;
+use SilverStripe\Dev\FixtureBlueprint;
+use SilverStripe\Dev\FixtureFactory;
 /**/
 class SeederFixtureFactory extends FixtureFactory {
+    /**/
+    private $createObjectCallback;
+    /**/
+    public function __construct($createObjectCallback = null)
+    {
+        if($createObjectCallback){
+            $this->createObjectCallback = $createObjectCallback;
+        }
+    }
     /**
      * Writes the fixture into the database using DataObjects
      *
@@ -35,32 +45,17 @@ class SeederFixtureFactory extends FixtureFactory {
         $this->fixtures[$class][$identifier] = $obj->ID;
 
         // For any images, lets store the image
-        if($class == "SilverStripe\Assets\Image"){
+        if($class == Image::class){
           $contents = @file_get_contents($data['URL']);
           $obj->setFromString($contents, $data['Name']);
           $obj->ParentID = $folder->ID;
           $obj->write();
           AssetAdmin::create()->generateThumbnails($obj);
-        } else if($class == "Werkbot\Calendar\Event"){
-          if(isset($data['RepeatStartDaysInTheFuture'])){
-              $obj->RepeatStartDate = date('Y-m-d H:i:s', strtotime('+' . $data['RepeatStartDaysInTheFuture'] . ' days'));
-              $obj->RepeatEndDate = date('Y-m-d H:i:s', strtotime('+' . $data['RepeatEndDaysInTheFuture'] . ' days'));
-              $obj->write();
-          }
-        } else if($class == "Werkbot\Calendar\EventDate"){
-          if(isset($data['DaysInTheFuture'])){
-            $obj->StartDate = date('Y-m-d H:i:s', strtotime('+' . $data['DaysInTheFuture'] . ' days'));
-          } else {
-            $obj->StartDate = date('Y-m-d H:i:s');
-          }
-          $obj->write();
-        } else if($class == "Werkbot\Calendar\EventTime"){
-          if(isset($data['TimeClass'])){
-            if($data['TimeClass'] == 'Werkbot\Calendar\Event'){
-              $obj->write();
-              $obj->Time()->RewriteDates();
-            }
-          }
+        }
+
+        if($this->createObjectCallback){
+            $createObjectCallback = $this->createObjectCallback;
+            $createObjectCallback($obj, $class, $data);
         }
 
         $obj->publishRecursive();
