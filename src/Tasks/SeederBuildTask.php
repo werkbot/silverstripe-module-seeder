@@ -41,12 +41,18 @@ class SeederBuildTask extends BuildTask {
 			} else if(file_exists('../app/_config/' . $this->fixtureFileName)) {
 				$fixtureFile = 'app/_config/' . $this->fixtureFileName;
 				$pathResolver = '../';
+			} else if(file_exists('../mysite/seeds/' . $this->fixtureFileName)) {
+				$fixtureFile = 'mysite/seeds/' . $this->fixtureFileName;
+				$pathResolver = '../';
+			} else if(file_exists('../mysite/_config/' . $this->fixtureFileName)) {
+				$fixtureFile = 'mysite/_config/' . $this->fixtureFileName;
+				$pathResolver = '../';
 
 			// Check in the current seeder's module if a fixture override exists
-			} else if(file_exists($seederTaskDirectory . '/../../_config/' . $this->fixtureFileName)) {
-				$fixtureFile = $seederTaskDirectory . '/../../_config/' . $this->fixtureFileName;
 			} else if(file_exists($seederTaskDirectory . '/../../seeds/' . $this->fixtureFileName)) {
 				$fixtureFile = $seederTaskDirectory . '/../../seeds/' . $this->fixtureFileName;
+			} else if(file_exists($seederTaskDirectory . '/../../_config/' . $this->fixtureFileName)) {
+				$fixtureFile = $seederTaskDirectory . '/../../_config/' . $this->fixtureFileName;
 
 			// Check if default fixture exists
 			} else if(file_exists(__DIR__ . '/../Fixtures/' . $this->fixtureFileName)) {
