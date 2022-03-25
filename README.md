@@ -10,9 +10,9 @@ composer require werkbot/werkbot-seeder
 - Silverstripe ^4.0
 
 ## Setup
-- You will need to run `dev/build`
+- You will need to run `/dev/build`
 
-- You can now run seeder tasks in `dev/Tasks` while in development mode (`SS_ENVIRONMENT_TYPE="dev"`).
+- You can now run seeder tasks in `/dev/Tasks` while in development mode (`SS_ENVIRONMENT_TYPE="dev"`).
 
 ## Usage
 
@@ -37,7 +37,7 @@ Page:
 - NavigationDropdownPages.yml
 		    
 ### Custom Seeders
-- Create a Custom Seeder Task:
+- Create a Custom SeederBuildTask:
 
 ```
 <?php
@@ -53,7 +53,7 @@ class CustomSeeder extends SeederBuildTask {
 	protected $fixtureFileName = 'CustomSeeder.yml';
 }
 ```
-- Create Fixture file for your Custom Seeder Task:
+- Create Fixture file for your Custom SeederBuildTask:
 
 ```
 # app/seeds/CustomSeeder.yml
@@ -66,7 +66,7 @@ CustomDataObject:
 ```
 
 ### Run All Enabled Seeders
-Run all seeders with "Generate Development Test Data". Configure which seeders should run in DatabaseSeeder.yml:
+Run all enabled seeders with `/dev/tasks/Werkbot-Seeder-SeederBuildTask`. Configure which seeders should run in DatabaseSeeder.yml:
 
 ```
 # app/seeds/DatabaseSeeder.yml
@@ -75,4 +75,47 @@ Werkbot\Seeder\NavigationDropdownPagesSeeder:
   enabled: true
 CustomSeeder:
   enabled: true
+```
+
+### Hook into Generated Objects
+Sometimes, you might want to manipulate the generated DataObjects with PHP. A `createObjectCallback` method can be provided in your SeederBuildTask. This runs everytime a DataObject is generated. The generated DataObject instance (`$obj`), the DataObject's class name (`$class`), and the properties passed in by your Fixture file (`$data`) are available within your `createObjectCallback`.
+
+#### The SeederBuildTask
+```
+<?php
+/**/
+use Werkbot\Seeder\SeederBuildTask;
+/**/
+class CalendarPageSeeder extends SeederBuildTask {
+	/**/
+	protected $title = 'Generate Calendar Page Seeder';
+	protected $description = 'Generate a calendar page with events.';
+	protected $enabled = true;
+	/**/
+	protected $fixtureFileName = 'CalendarPageSeeder.yml';
+	/**/
+	public function createObjectCallback($obj, $class, $data)
+	{
+		if($class == EventDate::class){
+			/*
+				Dynamically generate dates with PHP:
+
+				"DaysInTheFuture" is not a property of "EventDate",
+				but it is used to dynamically generate the "StartDate" property.
+			*/
+			if(isset($data['DaysInTheFuture'])){
+				$obj->StartDate = date('Y-m-d H:i:s', strtotime('+' . $data['DaysInTheFuture'] . ' days'));
+			} else {
+				$obj->StartDate = date('Y-m-d H:i:s');
+			}
+			$obj->write();
+		}
+	}
+} 
+```
+#### The Fixture File
+```
+EventDate:
+  EventDateOne:
+    DaysInTheFuture: 10
 ```
