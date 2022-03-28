@@ -2,11 +2,12 @@
 /**/
 namespace Werkbot\Seeder;
 /**/
+use SilverStripe\Core\Environment;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Core\Manifest\ModuleResourceLoader;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\Dev\YamlFixture;
-use SilverStripe\Core\Environment;
 use Symfony\Component\Yaml\Parser;
-use SilverStripe\Core\Injector\Injector;
 /**/
 class SeederBuildTask extends BuildTask
 {
@@ -19,11 +20,20 @@ class SeederBuildTask extends BuildTask
     /**/
     public function run($request)
     {
-        // Used to get contents of DatabaseSeeder.yml override
         // Only run in a dev or test environment
         if (Environment::getEnv('SS_ENVIRONMENT_TYPE') == 'dev'
             || Environment::getEnv('SS_ENVIRONMENT_TYPE') == 'test'
         ) {
+
+            // Open seeder list element if in web view
+            if (!Environment::isCli()) {
+                $debugCSS = ModuleResourceLoader::singleton()
+                    ->resolveURL('silverstripe/framework:client/styles/debug.css');
+                echo '<link rel="stylesheet" type="text/css" href="' . $debugCSS . '" />';
+                echo '<div class="build">';
+                echo '<ul>';
+            }
+
             // Get site root. Set to the current directory if running through command line.
             $siteRoot = $_SERVER['DOCUMENT_ROOT'] ? $_SERVER['DOCUMENT_ROOT'] . '/..' : getcwd();
 
@@ -78,9 +88,24 @@ class SeederBuildTask extends BuildTask
                 // Run enabled seeder classes
                 foreach ($fixtureContent as $seederClass => $options) {
                     if ($options['enabled']) {
-                        echo 'Running ' . $seederClass . '. <br>';
+
+                        // Render Seeder Task Heading
+                        if (!Environment::isCli()) {
+                            echo '<li class="header">Running' . $seederClass . ' </li><ul>';
+                        } else {
+                            echo ' Running ' . $seederClass . '.' . PHP_EOL;
+                        }
+
+                        // Run Seeder Task
                         Injector::inst()->create($seederClass)->run($request);
-                        echo '<br>';
+
+                        // Render Seeder Task Ending
+                        if (!Environment::isCli()) {
+                            echo '</ul>';
+                        } else {
+                            echo PHP_EOL;
+                        }
+
                     }
                 }
             } else {
@@ -95,6 +120,13 @@ class SeederBuildTask extends BuildTask
                     $fixture->writeInto(new SeederFixtureFactory(null));
                 }
             }
+
+            // Close seeder list element if in web view
+            if (!Environment::isCli()) {
+                echo '</ul>';
+                echo '</div>';
+            }
+
         } else {
             echo 'Must run in development or test environment';
         }
