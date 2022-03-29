@@ -8,15 +8,20 @@ use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Image;
 use SilverStripe\Dev\FixtureBlueprint;
 use SilverStripe\Dev\FixtureFactory;
+use SilverStripe\ORM\DB;
 /**/
 class SeederFixtureFactory extends FixtureFactory {
     /**/
     private $createObjectCallback;
+    private $seedObject;
     /**/
-    public function __construct($createObjectCallback = null)
+    public function __construct($createObjectCallback = null, $seedObject = null)
     {
         if($createObjectCallback){
             $this->createObjectCallback = $createObjectCallback;
+        }
+        if($seedObject){
+            $this->seedObject = $seedObject;
         }
     }
     /**
@@ -57,6 +62,16 @@ class SeederFixtureFactory extends FixtureFactory {
         if($this->createObjectCallback){
             $createObjectCallback = $this->createObjectCallback;
             $createObjectCallback($obj, $class, $data);
+        }
+
+        // Track the generated object and associate with the seed in a pivot table
+        if($this->seedObject){
+            $seedObject = $this->seedObject;
+            if(DB::get_conn()->getSchemaManager()->hasTable('SeedObject_Records')){
+                DB::query("INSERT INTO `SeedObject_Records` (ClassName, RecordID, SeedObjectID) VALUES ('" . addslashes($obj->ClassName) . "', '" . $obj->ID . "', '" . $seedObject->ID . "')");
+            }
+            $seedObject->Summary .= $identifier . ' created. <br>';
+            $seedObject->write();
         }
 
         $obj->publishRecursive();
