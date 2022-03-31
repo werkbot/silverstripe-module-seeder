@@ -3,6 +3,7 @@
 namespace Werkbot\Seeder;
 /**/
 use SilverStripe\Admin\ModelAdmin;
+use SilverStripe\Core\Environment;
 use SilverStripe\Forms\GridField\GridFieldButtonRow;
 use SilverStripe\Forms\GridField\GridFieldConfig;
 use SilverStripe\Forms\GridField\GridFieldDataColumns;
@@ -16,7 +17,6 @@ use SilverStripe\Forms\HeaderField;
 /**/
 class SeederAdmin extends ModelAdmin
 {
-    /**/
     private static $managed_models = [
         SeedObject::class => [
             'title' => 'Seeder History'
@@ -26,7 +26,7 @@ class SeederAdmin extends ModelAdmin
     private static $url_segment = 'seeder';
     private static $menu_title = 'Seeder';
     private static $menu_icon_class = 'font-icon-back-in-time';
-
+    /**/
     public function getEditForm($id = null, $fields = null) {
         $form = parent::getEditForm($id, $fields);
 
@@ -50,5 +50,17 @@ class SeederAdmin extends ModelAdmin
         $gridField->setConfig($config);
 
         return $form;
+    }
+    /**/
+    public function canView($member = null)
+    {
+        $canView = parent::canView($member = null);
+        /*
+            Only show seeder admin if in a dev or test environment
+        */
+        if (!(Environment::getEnv('SS_ENVIRONMENT_TYPE') == 'dev' || Environment::getEnv('SS_ENVIRONMENT_TYPE') == 'test')) {
+            $canView = false;
+        }
+        return $canView;
     }
 }
