@@ -43,7 +43,7 @@ class SeederAdmin extends ModelAdmin
             ->addComponent(new GridFieldSortableHeader())
             ->addComponent(new GridFieldFilterHeader())
             ->addComponent(new GridFieldEditButton())
-            ->addComponent(new GridFieldDetailForm())
+            ->addComponent((new GridFieldDetailForm())->setShowAdd(false))
             ->addComponent(new GridField_ActionMenu())
             ->addComponent(new GridFieldDeleteAction());
 
