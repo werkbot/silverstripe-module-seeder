@@ -111,13 +111,20 @@ class SeederBuildTask extends BuildTask
             } else {
                 // Run singular seeder
                 $fixture = YamlFixture::create($fixtureFile);
+
+                // Track this seed and generated records
+                $seedObject = SeedObject::create([
+                    'Title' => $this->title . ' - ' . date('Y-m-d H:i:s'),
+                ]);
+                $seedObject->write();
+
                 if (method_exists($this, 'createObjectCallback')) {
                     $createObjectCallback = function ($obj, $class, $data) {
                         call_user_func([$this, 'createObjectCallback'], $obj, $class, $data);
                     };
-                    $fixture->writeInto(new SeederFixtureFactory($createObjectCallback));
+                    $fixture->writeInto(new SeederFixtureFactory($createObjectCallback, $seedObject));
                 } else {
-                    $fixture->writeInto(new SeederFixtureFactory(null));
+                    $fixture->writeInto(new SeederFixtureFactory(null, $seedObject));
                 }
             }
 
