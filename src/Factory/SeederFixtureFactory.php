@@ -3,6 +3,7 @@
 namespace Werkbot\Seeder;
 /**/
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
+use SilverStripe\Core\Environment;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Image;
 use SilverStripe\Dev\FixtureBlueprint;
@@ -60,7 +61,11 @@ class SeederFixtureFactory extends FixtureFactory {
 
         $obj->publishRecursive();
 
-        echo $identifier . ' created. <br>';
+        if(!Environment::isCli()){
+            echo '<li class="info">' . $identifier . ' created.</li>';
+        } else {
+            echo ' - ' . $identifier . ' created.' . PHP_EOL;
+        }
 
         return $obj;
     }
