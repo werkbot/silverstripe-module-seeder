@@ -39,7 +39,7 @@ class SeedObject extends DataObject
     {
         parent::onAfterBuild();
         // Create Records Pivot Table if it does not exist
-        if(!DB::get_conn()->getSchemaManager()->hasTable('SeedObject_Records')){
+        if (!DB::get_conn()->getSchemaManager()->hasTable('SeedObject_Records')) {
             DB::query('CREATE TABLE `SeedObject_Records` (ID int primary key AUTO_INCREMENT, ClassName varchar(255), RecordID int, SeedObjectID int)');
         }
     }
@@ -49,11 +49,11 @@ class SeedObject extends DataObject
         parent::onBeforeDelete();
         // Delete all records associated with this seed
         $seedObjectRecords = DB::query('SELECT * FROM `SeedObject_Records` WHERE SeedObjectID = ' . $this->ID);
-        foreach($seedObjectRecords as $record){
+        foreach ($seedObjectRecords as $record) {
             $className = $record['ClassName'];
             $recordObject = $className::get()->byID($record['RecordID']);
-            if($recordObject){
-                if($recordObject->hasExtension(Versioned::class)){
+            if ($recordObject) {
+                if ($recordObject->hasExtension(Versioned::class)) {
                     $recordObject->doUnpublish();
                     $recordObject->doArchive();
                 }

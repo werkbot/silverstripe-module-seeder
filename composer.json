@@ -1,6 +1,6 @@
 {
-	"name": "werkbot/werkbot-seeder",
-	"description": "Development database seeder",
+  "name": "werkbot/werkbot-seeder",
+  "description": "Development database seeder",
   "type": "silverstripe-vendormodule",
   "require": {
    "silverstripe/cms": "~4.0",
