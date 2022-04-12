@@ -1,4 +1,6 @@
 # Silverstripe Seeder
+[![Latest Stable Version](http://poser.pugx.org/werkbot/werkbot-seeder/v)](https://packagist.org/packages/werkbot/werkbot-seeder) [![Total Downloads](http://poser.pugx.org/werkbot/werkbot-seeder/downloads)](https://packagist.org/packages/werkbot/werkbot-seeder) [![Latest Unstable Version](http://poser.pugx.org/werkbot/werkbot-seeder/v/unstable)](https://packagist.org/packages/werkbot/werkbot-seeder) [![License](http://poser.pugx.org/werkbot/werkbot-seeder/license)](https://packagist.org/packages/werkbot/werkbot-seeder) [![PHP Version Require](http://poser.pugx.org/werkbot/werkbot-seeder/require/php)](https://packagist.org/packages/werkbot/werkbot-seeder)
+
 A silverstripe database seeder that utilizes [Fixtures to generate DataObjects](https://docs.silverstripe.org/en/4/developer_guides/testing/fixtures/). Seeders can be used to quickly generate site structure, populate blog articles, fill in page content, etc...
 
 ## Installation
