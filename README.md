@@ -21,4 +21,4 @@ vendor/silverstripe/framework/sake dev/tasks/Werkbot-Seeder-SeederBuildTask
 ```
 
 ## Usage
-* [Usage documentation](docs/en/layout.md)
+* [Usage documentation](docs/en/README.md)
