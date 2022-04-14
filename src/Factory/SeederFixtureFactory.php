@@ -10,17 +10,18 @@ use SilverStripe\Dev\FixtureBlueprint;
 use SilverStripe\Dev\FixtureFactory;
 use SilverStripe\ORM\DB;
 /**/
-class SeederFixtureFactory extends FixtureFactory {
+class SeederFixtureFactory extends FixtureFactory
+{
     /**/
     private $createObjectCallback;
     private $seedObject;
     /**/
     public function __construct($createObjectCallback = null, $seedObject = null)
     {
-        if($createObjectCallback){
+        if ($createObjectCallback) {
             $this->createObjectCallback = $createObjectCallback;
         }
-        if($seedObject){
+        if ($seedObject) {
             $this->seedObject = $seedObject;
         }
     }
@@ -51,23 +52,23 @@ class SeederFixtureFactory extends FixtureFactory {
         $this->fixtures[$class][$identifier] = $obj->ID;
 
         // For any images, lets store the image
-        if($class == Image::class){
-          $contents = @file_get_contents($data['URL']);
-          $obj->setFromString($contents, $data['Name']);
-          $obj->ParentID = $folder->ID;
-          $obj->write();
-          AssetAdmin::create()->generateThumbnails($obj);
+        if ($class == Image::class) {
+            $contents = @file_get_contents($data['URL']);
+            $obj->setFromString($contents, $data['Name']);
+            $obj->ParentID = $folder->ID;
+            $obj->write();
+            AssetAdmin::create()->generateThumbnails($obj);
         }
 
-        if($this->createObjectCallback){
+        if ($this->createObjectCallback) {
             $createObjectCallback = $this->createObjectCallback;
             $createObjectCallback($obj, $class, $data);
         }
 
         // Track the generated object and associate with the seed in a pivot table
-        if($this->seedObject){
+        if ($this->seedObject) {
             $seedObject = $this->seedObject;
-            if(DB::get_conn()->getSchemaManager()->hasTable('SeedObject_Records')){
+            if (DB::get_conn()->getSchemaManager()->hasTable('SeedObject_Records')) {
                 DB::query("INSERT INTO `SeedObject_Records` (ClassName, RecordID, SeedObjectID) VALUES ('" . addslashes($obj->ClassName) . "', '" . $obj->ID . "', '" . $seedObject->ID . "')");
             }
             $seedObject->Summary .= $identifier . ' created. <br>';
@@ -76,7 +77,7 @@ class SeederFixtureFactory extends FixtureFactory {
 
         $obj->publishRecursive();
 
-        if(!Environment::isCli()){
+        if (!Environment::isCli()) {
             echo '<li class="info">' . $identifier . ' created.</li>';
         } else {
             echo ' - ' . $identifier . ' created.' . PHP_EOL;
