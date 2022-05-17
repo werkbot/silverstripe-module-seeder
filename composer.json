@@ -2,7 +2,10 @@
   "name": "werkbot/werkbot-seeder",
   "description": "Development database seeder",
   "type": "silverstripe-vendormodule",
+  "license": "MIT",
+  "homepage": "https://github.com/werkbot/silverstripe-module-seeder",
   "require": {
+   "php": "^7.3 || ^8.0",
    "silverstripe/cms": "~4.0",
    "silverstripe/framework": "~4.0"
   },
