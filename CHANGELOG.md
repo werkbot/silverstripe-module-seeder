@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.2 - 2022-07-12
+## 🎉 New Features
+- Added automatic draft release and changelog updater ([#23](https://github.com/werkbot/silverstripe-module-seeder/pull/23) by [tiller1010](https://github.com/tiller1010))
+
+
+
 ## [2.1.0](https://github.com/werkbot/silverstripe-module-seeder/tree/2.1.0) (2022-04-08)
 
 [Full Changelog](https://github.com/werkbot/silverstripe-module-seeder/compare/2.0.1...2.1.0)
