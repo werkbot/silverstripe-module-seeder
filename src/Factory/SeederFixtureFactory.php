@@ -5,6 +5,7 @@ namespace Werkbot\Seeder;
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\Core\Environment;
 use SilverStripe\Assets\Folder;
+use SilverStripe\Assets\File;
 use SilverStripe\Assets\Image;
 use SilverStripe\Dev\FixtureBlueprint;
 use SilverStripe\Dev\FixtureFactory;
@@ -52,7 +53,7 @@ class SeederFixtureFactory extends FixtureFactory
         $this->fixtures[$class][$identifier] = $obj->ID;
 
         // For any images, lets store the image
-        if ($class == Image::class) {
+        if ($class == File::class || $class == Image::class) {
             $contents = @file_get_contents($data['URL']);
             $obj->setFromString($contents, $data['Name']);
             $obj->ParentID = $folder->ID;
