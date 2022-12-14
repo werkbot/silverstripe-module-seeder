@@ -38,7 +38,7 @@ class SeederFixtureFactory extends FixtureFactory
     public function createObject($name, $identifier, $data = null)
     {
         // Create a Folder for any seeder images generated
-        $folder = Folder::find_or_make("SeederImages");
+        $folder = Folder::find_or_make("SeederFiles");
         //
         if (!isset($this->blueprints[$name])) {
             $this->blueprints[$name] = new FixtureBlueprint($name);
@@ -52,7 +52,7 @@ class SeederFixtureFactory extends FixtureFactory
         }
         $this->fixtures[$class][$identifier] = $obj->ID;
 
-        // For any images, lets store the image
+        // For any images and videos, store the file
         if ($class == File::class || $class == Image::class) {
             $contents = @file_get_contents($data['URL']);
             $obj->setFromString($contents, $data['Name']);
