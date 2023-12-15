@@ -9,6 +9,9 @@
    "silverstripe/cms": "^5",
    "silverstripe/framework": "^5"
   },
+  "require-dev": {
+    "code-lts/doctum": "^5.5"
+  },
   "extra": {
     "branch-alias": {
       "dev-master": "1.0.x-dev"
