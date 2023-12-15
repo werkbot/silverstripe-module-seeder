@@ -1,6 +1,6 @@
 <?php
 
-namespace Werkbot\Seeder;
+namespace Werkbot\Seeder\SeederHistory;
 
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\Core\Environment;
@@ -17,51 +17,53 @@ use SilverStripe\Forms\HeaderField;
 
 class SeederAdmin extends ModelAdmin
 {
-    private static $managed_models = [
-        SeedObject::class => [
-            'title' => 'Seeder History'
-        ],
-    ];
+  private static $managed_models = [
+    SeedObject::class => [
+      'title' => 'Seeder History'
+    ],
+  ];
 
-    private static $url_segment = 'seeder';
-    private static $menu_title = 'Seeder';
-    private static $menu_icon_class = 'font-icon-back-in-time';
+  private static $url_segment = 'seeder';
+  private static $menu_title = 'Seeder';
+  private static $menu_icon_class = 'font-icon-back-in-time';
 
-    public function getEditForm($id = null, $fields = null)
-    {
-        $form = parent::getEditForm($id, $fields);
+  public function getEditForm($id = null, $fields = null)
+  {
+    $form = parent::getEditForm($id, $fields);
 
-        $form->fields()->insertBefore(
-            $this->sanitiseClassName($this->modelClass),
-            HeaderField::create('Remove generated data by deleting the associated seed.')
-        );
+    $form->fields()->insertBefore(
+      $this->sanitiseClassName($this->modelClass),
+      HeaderField::create('Remove generated data by deleting the associated seed.')
+    );
 
-        $gridField = $form->fields()->fieldByName($this->sanitiseClassName($this->modelClass));
+    $gridField = $form->fields()->fieldByName($this->sanitiseClassName($this->modelClass));
 
-        $config = GridFieldConfig::create();
-        $config->addComponent(new GridFieldButtonRow('before'))
-            ->addComponent(new GridFieldDataColumns())
-            ->addComponent(new GridFieldSortableHeader())
-            ->addComponent(new GridFieldFilterHeader())
-            ->addComponent(new GridFieldEditButton())
-            ->addComponent((new GridFieldDetailForm())->setShowAdd(false))
-            ->addComponent(new GridField_ActionMenu())
-            ->addComponent(new GridFieldDeleteAction());
+    $config = GridFieldConfig::create();
+    $config->addComponent(new GridFieldButtonRow('before'))
+           ->addComponent(new GridFieldDataColumns())
+           ->addComponent(new GridFieldSortableHeader())
+           ->addComponent(new GridFieldFilterHeader())
+           ->addComponent(new GridFieldEditButton())
+           ->addComponent((new GridFieldDetailForm())->setShowAdd(false))
+           ->addComponent(new GridField_ActionMenu())
+           ->addComponent(new GridFieldDeleteAction());
 
-        $gridField->setConfig($config);
+    $gridField->setConfig($config);
 
-        return $form;
-    }
+    return $form;
+  }
 
-    public function canView($member = null)
-    {
-        $canView = parent::canView($member = null);
+  public function canView($member = null)
+  {
+    $canView = parent::canView($member = null);
         /*
             Only show seeder admin if in a dev or test environment
-        */
-        if (!(Environment::getEnv('SS_ENVIRONMENT_TYPE') == 'dev' || Environment::getEnv('SS_ENVIRONMENT_TYPE') == 'test')) {
-            $canView = false;
-        }
-        return $canView;
+         */
+    if (!(Environment::getEnv('SS_ENVIRONMENT_TYPE') == 'dev' || Environment::getEnv('SS_ENVIRONMENT_TYPE') == 'test')) {
+      $canView = false;
     }
+    return $canView;
+  }
+
 }
+

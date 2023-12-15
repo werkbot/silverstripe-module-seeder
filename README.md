@@ -22,3 +22,15 @@ vendor/silverstripe/framework/sake dev/tasks/Werkbot-Seeder-SeederBuildTask
 
 ## Usage
 * [Usage documentation](docs/en/README.md)
+
+## Documentation
+Generate documentation using Doctum:
+```
+./vendor/bin/doctum.php update doctum.config.php
+```
+
+View the api documentation:
+```
+start doctum_build/index.html
+```
+
