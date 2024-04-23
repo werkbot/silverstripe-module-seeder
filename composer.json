@@ -5,9 +5,9 @@
   "license": "MIT",
   "homepage": "https://github.com/werkbot/silverstripe-module-seeder",
   "require": {
-   "php": "^7.3 || ^8.0",
-   "silverstripe/cms": "~4.0",
-   "silverstripe/framework": "~4.0"
+   "php": "^8.1",
+   "silverstripe/cms": "^5",
+   "silverstripe/framework": "^5"
   },
   "extra": {
     "branch-alias": {
