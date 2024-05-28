@@ -1,7 +1,7 @@
 <?php
-/**/
+
 namespace Werkbot\Seeder;
-/**/
+
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\Core\Environment;
 use SilverStripe\Forms\GridField\GridFieldButtonRow;
@@ -14,7 +14,7 @@ use SilverStripe\Forms\GridField\GridFieldFilterHeader;
 use SilverStripe\Forms\GridField\GridFieldSortableHeader;
 use SilverStripe\Forms\GridField\GridField_ActionMenu;
 use SilverStripe\Forms\HeaderField;
-/**/
+
 class SeederAdmin extends ModelAdmin
 {
     private static $managed_models = [
@@ -22,17 +22,18 @@ class SeederAdmin extends ModelAdmin
             'title' => 'Seeder History'
         ],
     ];
-    /**/
+
     private static $url_segment = 'seeder';
     private static $menu_title = 'Seeder';
     private static $menu_icon_class = 'font-icon-back-in-time';
-    /**/
-    public function getEditForm($id = null, $fields = null) {
+
+    public function getEditForm($id = null, $fields = null)
+    {
         $form = parent::getEditForm($id, $fields);
 
         $form->fields()->insertBefore(
-            HeaderField::create('Remove generated data by deleting the associated seed.'),
-            $this->sanitiseClassName($this->modelClass)
+            $this->sanitiseClassName($this->modelClass),
+            HeaderField::create('Remove generated data by deleting the associated seed.')
         );
 
         $gridField = $form->fields()->fieldByName($this->sanitiseClassName($this->modelClass));
@@ -51,7 +52,7 @@ class SeederAdmin extends ModelAdmin
 
         return $form;
     }
-    /**/
+
     public function canView($member = null)
     {
         $canView = parent::canView($member = null);
