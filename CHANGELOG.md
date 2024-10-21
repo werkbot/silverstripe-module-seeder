@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.0 - 2024-10-21
+## 🎉 New Features
+- psr-4, psr-12, and doctum ([#33](https://github.com/werkbot/silverstripe-module-seeder/pull/33) by [tiller1010](https://github.com/tiller1010))
+
+
+
 ## 3.0.1 - 2024-05-28
 
 
