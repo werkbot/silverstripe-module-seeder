@@ -10,6 +10,7 @@ use SilverStripe\Dev\YamlFixture;
 use Symfony\Component\Yaml\Parser;
 use Werkbot\Seeder\Factory\SeederFixtureFactory;
 use Werkbot\Seeder\SeederHistory\SeedObject;
+use Werkbot\Seeder\Settings\SeederSettings;
 
 class SeederBuildTask extends BuildTask
 {
@@ -21,6 +22,11 @@ class SeederBuildTask extends BuildTask
 
   public function run($request)
   {
+    if (!SeederSettings::currentSeederSettings()->Enabled) {
+      echo 'Must enable seeder in the CMS: /admin/seeder/Werkbot-Seeder-Settings-SeederSettings';
+      return;
+    }
+
     // Only run in a dev or test environment
     if (Environment::getEnv('SS_ENVIRONMENT_TYPE') == 'dev'
       || Environment::getEnv('SS_ENVIRONMENT_TYPE') == 'test'
