@@ -10,6 +10,7 @@ use SilverStripe\Core\Manifest\ModuleResourceLoader;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\Dev\YamlFixture;
 use SilverStripe\PolyExecution\PolyOutput;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Yaml\Parser;
 use Werkbot\Seeder\Factory\SeederFixtureFactory;
@@ -29,7 +30,7 @@ class SeederBuildTask extends BuildTask
   {
     if (!SeederSettings::currentSeederSettings()->Enabled) {
       echo 'Must enable seeder in the CMS: /admin/seeder/Werkbot-Seeder-Settings-SeederSettings';
-      return;
+      return Command::INVALID;
     }
 
     // Only run in a dev or test environment
@@ -89,7 +90,7 @@ class SeederBuildTask extends BuildTask
         $fixtureFile = $seederTaskProjectDirectory . '/src/Fixtures/' . $this->fixtureFileName;
       } else {
         echo 'No fixture file found. Create an "app/seeds/$fixtureFileName"';
-        return;
+        return Command::INVALID;
       }
 
       // If running the parent SeederBuildTask
@@ -146,9 +147,13 @@ class SeederBuildTask extends BuildTask
         echo '</div>';
       }
 
+      return Command::SUCCESS;
+
     } else {
       echo 'Must run in development or test environment';
     }
+
+    return Command::INVALID;
   }
 
 }
