@@ -2,6 +2,7 @@
 
 namespace Werkbot\Seeder\Settings;
 
+use Override;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\FieldList;
@@ -16,6 +17,7 @@ class SeederSettings extends DataObject
     'Enabled' => 'Boolean',
   ];
 
+  #[Override]
   public function getCMSFields()
   {
     return FieldList::create(
@@ -47,6 +49,7 @@ class SeederSettings extends DataObject
   /**
    * Setup a default SeederSettings record if none exists.
    */
+  #[Override]
   public function requireDefaultRecords()
   {
     parent::requireDefaultRecords();

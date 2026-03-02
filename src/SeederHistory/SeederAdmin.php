@@ -2,6 +2,7 @@
 
 namespace Werkbot\Seeder\SeederHistory;
 
+use Override;
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\Core\Environment;
 use SilverStripe\Forms\FieldList;
@@ -35,6 +36,7 @@ class SeederAdmin extends ModelAdmin
   private static $menu_title = 'Seeder';
   private static $menu_icon_class = 'font-icon-back-in-time';
 
+  #[Override]
   public function getEditForm($id = null, $fields = null)
   {
     $modelClass = $this->modelClass;
@@ -78,14 +80,14 @@ class SeederAdmin extends ModelAdmin
     $gridField = $form->fields()->fieldByName($this->sanitiseClassName($modelClass));
 
     $config = GridFieldConfig::create();
-    $config->addComponent(new GridFieldButtonRow('before'))
-      ->addComponent(new GridFieldDataColumns())
-      ->addComponent(new GridFieldSortableHeader())
-      ->addComponent(new GridFieldFilterHeader())
-      ->addComponent(new GridFieldEditButton())
-      ->addComponent((new GridFieldDetailForm())->setShowAdd(false))
-      ->addComponent(new GridField_ActionMenu())
-      ->addComponent(new GridFieldDeleteAction());
+    $config->addComponent(GridFieldButtonRow::create('before'))
+      ->addComponent(GridFieldDataColumns::create())
+      ->addComponent(GridFieldSortableHeader::create())
+      ->addComponent(GridFieldFilterHeader::create())
+      ->addComponent(GridFieldEditButton::create())
+      ->addComponent((GridFieldDetailForm::create())->setShowAdd(false))
+      ->addComponent(GridField_ActionMenu::create())
+      ->addComponent(GridFieldDeleteAction::create());
 
     $gridField->setConfig($config);
 
@@ -111,6 +113,7 @@ class SeederAdmin extends ModelAdmin
     return $form->forTemplate();
   }
 
+  #[Override]
   public function canView($member = null)
   {
     $canView = parent::canView($member = null);

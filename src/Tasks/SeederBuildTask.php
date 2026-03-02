@@ -2,11 +2,15 @@
 
 namespace Werkbot\Seeder\Tasks;
 
+use Override;
+use ReflectionClass;
 use SilverStripe\Core\Environment;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Manifest\ModuleResourceLoader;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\Dev\YamlFixture;
+use SilverStripe\PolyExecution\PolyOutput;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Yaml\Parser;
 use Werkbot\Seeder\Factory\SeederFixtureFactory;
 use Werkbot\Seeder\SeederHistory\SeedObject;
@@ -14,13 +18,14 @@ use Werkbot\Seeder\Settings\SeederSettings;
 
 class SeederBuildTask extends BuildTask
 {
-  protected $title = 'Generate Development Test Data';
-  protected $description = 'Generate development test data. Reduces the time it takes to test a newly installed site.';
+  protected string $title = 'Generate Development Test Data';
+  protected static string $description = 'Generate development test data. Reduces the time it takes to test a newly installed site.';
   protected $enabled = true;
 
   protected $fixtureFileName = 'DatabaseSeeder.yml';
 
-  public function run($request)
+  #[Override]
+  public function execute(InputInterface $input, PolyOutput $output): int
   {
     if (!SeederSettings::currentSeederSettings()->Enabled) {
       echo 'Must enable seeder in the CMS: /admin/seeder/Werkbot-Seeder-Settings-SeederSettings';
@@ -45,13 +50,13 @@ class SeederBuildTask extends BuildTask
       $siteRoot = $_SERVER['DOCUMENT_ROOT'] ? $_SERVER['DOCUMENT_ROOT'] . '/..' : getcwd();
 
       // Get the directory of the current seeder build task
-      $seederTaskDirectory = (new \ReflectionClass(get_class($this)))->getFilename();
+      $seederTaskDirectory = (new ReflectionClass(static::class))->getFilename();
 
       // Split path to seeder task into individual directories. Used to find the seeder project directory.
       $seederTaskDirectories = explode('/', $seederTaskDirectory);
       // If the directory is not split by forward slashes, split by Windows back slashes
       if (count($seederTaskDirectories) == 1) {
-        $seederTaskDirectories = explode('\\', join($seederTaskDirectories));
+        $seederTaskDirectories = explode('\\', implode('', $seederTaskDirectories));
       }
       array_pop($seederTaskDirectories);
 
@@ -67,7 +72,7 @@ class SeederBuildTask extends BuildTask
           break;
         }
       }
-      $seederTaskProjectDirectory = join('/', $seederTaskProjectDirectories);
+      $seederTaskProjectDirectory = implode('/', $seederTaskProjectDirectories);
 
       // Check in the site if a fixture override exists
       if (file_exists($siteRoot . '/app/seeds/' . $this->fixtureFileName)) {
@@ -104,7 +109,7 @@ class SeederBuildTask extends BuildTask
             }
 
             // Run Seeder Task
-            Injector::inst()->create($seederClass)->run($request);
+            Injector::inst()->create($seederClass)->execute($input, $output);
 
             // Render Seeder Task Ending
             if (!Environment::isCli()) {
@@ -126,7 +131,7 @@ class SeederBuildTask extends BuildTask
         $seedObject->write();
 
         if (method_exists($this, 'createObjectCallback')) {
-          $createObjectCallback = function ($obj, $class, $data) {
+          $createObjectCallback = function ($obj, $class, $data): void {
             call_user_func([$this, 'createObjectCallback'], $obj, $class, $data);
           };
           $fixture->writeInto(new SeederFixtureFactory($createObjectCallback, $seedObject));

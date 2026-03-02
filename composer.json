@@ -10,7 +10,8 @@
    "silverstripe/framework": "^6"
   },
   "require-dev": {
-    "code-lts/doctum": "^5.5"
+    "code-lts/doctum": "^5.5",
+    "wernerkrauss/silverstripe-rector": "^1"
   },
   "extra": {
     "branch-alias": {
@@ -21,5 +22,11 @@
    "psr-4": {
      "Werkbot\\Seeder\\": "src/"
    }
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true,
+      "silverstripe/vendor-plugin": true
+    }
   }
 }
