@@ -2,6 +2,7 @@
 
 namespace Werkbot\Seeder\Factory;
 
+use Override;
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\Core\Environment;
 use SilverStripe\Assets\Folder;
@@ -35,6 +36,7 @@ class SeederFixtureFactory extends FixtureFactory
    * @param array $data Map of properties. Overrides default data.
    * @return DataObject
    */
+  #[Override]
   public function createObject($name, $identifier, $data = null)
   {
     // Create a Folder for any seeder images generated
