@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.1.1 - 2026-06-23
+
+
+
+
 ## 4.1.0 - 2025-08-29
 ## 🎉 New Features
 - seeder settings, enable/disable seeder ([#36](https://github.com/werkbot/silverstripe-module-seeder/pull/36) by [tiller1010](https://github.com/tiller1010))
