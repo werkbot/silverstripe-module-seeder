@@ -3,10 +3,11 @@
 namespace Werkbot\Seeder\Factory;
 
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
-use SilverStripe\Core\Environment;
-use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\File;
+use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Image;
+use SilverStripe\Control\Director;
+use SilverStripe\Core\Environment;
 use SilverStripe\Dev\FixtureBlueprint;
 use SilverStripe\Dev\FixtureFactory;
 use SilverStripe\ORM\DB;
@@ -54,7 +55,14 @@ class SeederFixtureFactory extends FixtureFactory
 
     // For any images and videos, store the file
     if ($class == File::class || $class == Image::class) {
-      $contents = @file_get_contents($data['URL']);
+      $url = $data['URL'];
+      // If the origin is the same, we can use an absolute path
+      $baseUrl = Environment::getEnv('SS_BASE_URL') ?: Director::absoluteBaseURL();
+      if (strpos($url, $baseUrl) === 0) {
+        $url = str_replace($baseUrl, $_SERVER['DOCUMENT_ROOT'], $url);
+      }
+
+      $contents = @file_get_contents($url);
       $obj->setFromString($contents, $data['Name']);
       $obj->ParentID = $folder->ID;
       $obj->write();
