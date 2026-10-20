@@ -59,7 +59,7 @@ class SeederFixtureFactory extends FixtureFactory
       // If the origin is the same, we can use an absolute path
       $baseUrl = Environment::getEnv('SS_BASE_URL') ?: Director::absoluteBaseURL();
       if (strpos($url, $baseUrl) === 0) {
-        $url = str_replace($baseUrl, $_SERVER['DOCUMENT_ROOT'], $url);
+        $url = str_replace($baseUrl, __DIR__ . '/../../../../../public', $url);
       }
 
       $contents = @file_get_contents($url);
