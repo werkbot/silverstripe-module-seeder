@@ -2,6 +2,7 @@
 
 namespace Werkbot\Seeder\SeederHistory;
 
+use Override;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\HTMLReadonlyField;
 use SilverStripe\Forms\ReadonlyField;
@@ -27,6 +28,7 @@ class SeedObject extends DataObject
     'Summary' => 'HTMLText',
   ];
 
+  #[Override]
   public function getCMSFields()
   {
     return FieldList::create(
@@ -35,6 +37,7 @@ class SeedObject extends DataObject
     );
   }
 
+  #[Override]
   public function onAfterBuild()
   {
     parent::onAfterBuild();
@@ -44,6 +47,7 @@ class SeedObject extends DataObject
     }
   }
 
+  #[Override]
   public function onAfterDelete()
   {
     parent::onBeforeDelete();
