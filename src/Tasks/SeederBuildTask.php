@@ -39,9 +39,6 @@ class SeederBuildTask extends BuildTask
         echo '<link rel="stylesheet" type="text/css" href="' . $debugCSS . '" />';
         echo '<div class="build">';
         echo '<ul>';
-      } else {
-        ini_set('memory_limit', '-1');
-        ini_set('max_execution_time', '-1');
       }
 
       // Get site root. Set to the current directory if running through command line.
