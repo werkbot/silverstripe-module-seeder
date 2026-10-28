@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.0.1 - 2026-10-28
+## 🎉 New Features
+- use local images ([#42](https://github.com/werkbot/silverstripe-module-seeder/pull/42) by [tiller1010](https://github.com/tiller1010))
+
+
+
 ## 5.0.0 - 2026-10-21
 
 
