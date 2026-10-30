@@ -3,10 +3,11 @@
 namespace Werkbot\Seeder\Factory;
 
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
-use SilverStripe\Core\Environment;
-use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\File;
+use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Image;
+use SilverStripe\Control\Director;
+use SilverStripe\Core\Environment;
 use SilverStripe\Dev\FixtureBlueprint;
 use SilverStripe\Dev\FixtureFactory;
 use SilverStripe\ORM\DB;
@@ -37,9 +38,6 @@ class SeederFixtureFactory extends FixtureFactory
    */
   public function createObject($name, $identifier, $data = null)
   {
-    // Create a Folder for any seeder images generated
-    $folder = Folder::find_or_make("SeederFiles");
-    //
     if (!isset($this->blueprints[$name])) {
       $this->blueprints[$name] = new FixtureBlueprint($name);
     }
@@ -54,9 +52,26 @@ class SeederFixtureFactory extends FixtureFactory
 
     // For any images and videos, store the file
     if ($class == File::class || $class == Image::class) {
-      $contents = @file_get_contents($data['URL']);
+      $url = $data['URL'];
+      // If the origin is the same, we can use an absolute path
+      $baseUrl = Environment::getEnv('SS_BASE_URL') ?: Director::absoluteBaseURL();
+      if ($this->hasSameOrigin($url, $baseUrl)) {
+        $urlPath = $this->getRelativeUrlPath($url, $baseUrl);
+        $decodedUrlPath = rawurldecode($urlPath);
+        $url = __DIR__ . '/../../../../../public/' . ltrim($decodedUrlPath, '/');
+        $folderPath = dirname(ltrim($decodedUrlPath, '/'));
+        $folderPath = preg_replace('#^assets(?:/|$)#', '', $folderPath);
+        $folder = $folderPath && $folderPath !== '.'
+          ? Folder::find_or_make($folderPath)
+          : null;
+      } else {
+        // Keep files downloaded from other origins separate from existing assets.
+        $folder = Folder::find_or_make('SeederFiles');
+      }
+
+      $contents = @file_get_contents($url);
       $obj->setFromString($contents, $data['Name']);
-      $obj->ParentID = $folder->ID;
+      $obj->ParentID = $folder ? $folder->ID : 0;
       $obj->write();
       AssetAdmin::create()->generateThumbnails($obj);
     }
@@ -85,6 +100,37 @@ class SeederFixtureFactory extends FixtureFactory
     }
 
     return $obj;
+  }
+
+  private function hasSameOrigin(string $url, string $baseUrl): bool
+  {
+    $urlParts = parse_url($url);
+    $baseUrlParts = parse_url($baseUrl);
+
+    if (!$urlParts || !$baseUrlParts || !isset($urlParts['scheme'], $urlParts['host'], $baseUrlParts['scheme'], $baseUrlParts['host'])) {
+      return false;
+    }
+
+    $urlScheme = strtolower($urlParts['scheme']);
+    $baseUrlScheme = strtolower($baseUrlParts['scheme']);
+    $urlPort = $urlParts['port'] ?? ($urlScheme === 'https' ? 443 : 80);
+    $baseUrlPort = $baseUrlParts['port'] ?? ($baseUrlScheme === 'https' ? 443 : 80);
+
+    return $urlScheme === $baseUrlScheme
+      && strtolower($urlParts['host']) === strtolower($baseUrlParts['host'])
+      && $urlPort === $baseUrlPort;
+  }
+
+  private function getRelativeUrlPath(string $url, string $baseUrl): string
+  {
+    $urlPath = (string) parse_url($url, PHP_URL_PATH);
+    $baseUrlPath = rtrim((string) parse_url($baseUrl, PHP_URL_PATH), '/');
+
+    if ($baseUrlPath && ($urlPath === $baseUrlPath || strpos($urlPath, $baseUrlPath . '/') === 0)) {
+      return substr($urlPath, strlen($baseUrlPath));
+    }
+
+    return $urlPath;
   }
 
 }
