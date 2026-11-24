@@ -56,6 +56,8 @@ class SeederFixtureFactory extends FixtureFactory
         if ($schema->manyManyComponent($class, $fieldName)
           || $schema->hasManyComponent($class, $fieldName)
           || $schema->hasOneComponent($class, $fieldName)
+          || $fieldName === 'URL'
+          || str_ends_with($fieldName, 'ID')
         ) {
           continue;
         }
