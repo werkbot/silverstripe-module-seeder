@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.0.2 - 2026-11-25
+## 🐛 Bugfixes
+- set properties again after saving
+- skip url and relation restoration
+
+
+
 ## 5.0.1 - 2026-10-28
 ## 🎉 New Features
 - use local images ([#42](https://github.com/werkbot/silverstripe-module-seeder/pull/42) by [tiller1010](https://github.com/tiller1010))
