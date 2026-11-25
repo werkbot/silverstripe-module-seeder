@@ -12,6 +12,7 @@ use SilverStripe\Core\Environment;
 use SilverStripe\Dev\FixtureBlueprint;
 use SilverStripe\Dev\FixtureFactory;
 use SilverStripe\ORM\DB;
+use SilverStripe\ORM\DataObject;
 
 class SeederFixtureFactory extends FixtureFactory
 {
@@ -45,7 +46,25 @@ class SeederFixtureFactory extends FixtureFactory
     }
     $blueprint = $this->blueprints[$name];
     $obj = $blueprint->createObject($identifier, $data, $this->fixtures);
+
+    $schema = DataObject::getSchema();
     $class = $blueprint->getClass();
+
+    // Set fields again, as onBeforeWrite() may have changed them, and we want to ensure that the fixture data is applied.
+    if ($data) {
+      foreach ($data as $fieldName => $fieldVal) {
+        if ($schema->manyManyComponent($class, $fieldName)
+          || $schema->hasManyComponent($class, $fieldName)
+          || $schema->hasOneComponent($class, $fieldName)
+          || $fieldName === 'URL'
+          || str_ends_with($fieldName, 'ID')
+        ) {
+          continue;
+        }
+
+        $obj->$fieldName = $fieldVal;
+      }
+    }
 
     if (!isset($this->fixtures[$class])) {
       $this->fixtures[$class] = [];
@@ -93,6 +112,7 @@ class SeederFixtureFactory extends FixtureFactory
       $seedObject->write();
     }
 
+    $obj->write();
     $obj->publishRecursive();
 
     if (!Environment::isCli()) {
